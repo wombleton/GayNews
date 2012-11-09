@@ -1,0 +1,109 @@
+<html>
+<head><title>Big Gay News</title>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div id="banner"><h1>Today's Big Gay News</h1></div>
+
+<a href="https://twitter.com/share?url=http://nathan.torkington.com/gaynews/&hashtags=GayRedShirtDay&text=Ermahgerd%20it's%20not%20just%20the%20red%20shirts!" class="twitter-share-button" data-lang="en">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<div id="news">Just a sec, I'm loading the gay news ...</div>
+<noscript>
+You can only see the gay news if you have Javascript enabled in a relatively modern
+browser, sorry.
+</noscript>
+
+<div id="footer">
+Produced from the <a href="http://radionz.co.nz">Radio New Zealand</a> news feed, with
+the help of <a href="http://code.google.com/p/jspos/">jspos</a> and
+<a href="https://developers.google.com/feed/">the Google Feed API</a>.  Written by
+<a href="http://nathan.torkington.com">Nat Torkington</a> to honour
+<a href="http://tvnz.co.nz/national-news/groups-celebrate-gay-red-shirt-day-today-5206860">Gay
+Red Shirt Day</a> and our Prime Minister's learning journey.
+</div>
+
+
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+
+<script type="text/javascript" src="lexer.js"></script>
+<script type="text/javascript" src="lexicon.js"></script>
+<script type="text/javascript" src="POSTagger.js"></script>
+
+<script type="text/javascript">
+
+// Load the Google Feeds API
+google.load("feeds", "1");
+
+
+function initialize() {
+  document.getElementById("news").innerHTML = ""; // clear away the no Javascript warning
+
+  var feed_address = 'http://www.radionz.co.nz/rss/national.xml'; // http://rss.nzherald.co.nz/rss/xml/nzhrsscid_000000001.xml
+  var feed = new google.feeds.Feed(feed_address);
+  feed.setNumEntries(20);
+  feed.load(function(result) {
+	var source_text = new Array();
+	if (!result.error) {
+	  var container = document.getElementById("news");
+	  for (var i = 0; i < result.feed.entries.length; i++) {
+		var entry = result.feed.entries[i];
+		var div = document.createElement("h2");
+		var a = document.createElement("a");
+		a.href=entry.link;
+		a.appendChild(document.createTextNode(gayified(entry.title)));
+		div.appendChild(a);
+		container.appendChild(div);
+		div = document.createElement("div");
+		div.appendChild(document.createTextNode(gayified(entry.content)));
+		container.appendChild(div);
+	  }
+	} else {
+		alert(result.error);
+	}
+  });
+}
+google.setOnLoadCallback(initialize);
+
+function gayified(text) {
+	// Note the \ at the end of the first line
+	var words = new Lexer().lex(text);
+	var taggedWords = new POSTagger().tag(words);
+	var result = "";
+	var first = 1;
+	for (i in taggedWords) {
+	  var taggedWord = taggedWords[i];
+	  var word = taggedWord[0];
+	  var tag = taggedWord[1];
+	  // Note the use of document.writeln instead of print
+	  if (tag == 'NN' && word != 'I' && !first) {
+		result += "gay ";
+	  }
+	  result += (word + " ");
+	  first = 0;
+	}
+	// clean up some over-zealous gayification.  Downgrade from Flaming to Hawt
+	result = result.replace(" .", ".");
+	result = result.replace(" ,", ",");
+	result = result.replace(/\$ (\d)/, function (str, gr1) { return "$" + gr1 } );
+	result = result.replace(/(\d) ?, gay (\d)/, function (str, g1, g2) { return g1 + "," + g2 });
+	return result;
+}
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36210841-1']);
+  _gaq.push(['_setDomainName', 'torkington.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

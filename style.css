@@ -1,0 +1,33 @@
+body {
+  font-family: "Helvetica", "sans-serif";
+  width: 400px;
+  float: left;
+}
+
+#banner {
+  background: #f7b;
+  color: #fff;
+  padding: 1px;
+  text-align: center;
+}
+
+#news h2 {
+  font-size: 16pt;
+  color: #f00;
+}
+
+#news h2 a {
+  color: inherit;
+  text-decoration: inherit
+}
+
+#news div {
+  margin-left: 5em;
+  font-size: 12pt;
+}
+
+#footer {
+  font-size: 10px;
+  border-top: 1px solid black;
+  margin-top: 2em;
+}
